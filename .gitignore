@@ -2,4 +2,5 @@
 tsconfig.json
 
 .fake
-/JSoutput
+/.vscode
+/JavaScripts
