@@ -77,11 +77,18 @@ class MindMap extends Graph{//思维导图
         
     }
         
-    async connectedCallback(){
+    connectedCallback(){
         if (this.dataset.href){
+            var parse = new DOMParser();
             this.href = this.dataset.href;
-            await this.fetchMMFile();
-            await this.loadMMXML(this.XMLRaw);
+            fetch(this.href)
+                .then(response => response.text()) // 解析数据
+                .then(data => this.XMLRaw = data)  // 处理数据
+                .then(data => this.XMLDoc = parse.parseFromString(this.XMLRaw,"application/xml"))
+                .catch(error => console.error('Error happened:', error)); // 错误处理
+            console.log(this.XMLRaw);
+            
+            this.XMLDoc = parse.parseFromString(this.XMLRaw,"application/xml");
         }
         else{
             this.rootObj = new MindMapObj("空导图")
