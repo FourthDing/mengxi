@@ -59,7 +59,6 @@ class MindMap extends Graph{//思维导图
     XMLDoc:Document;
     XMLRaw:string = ""
     contents: any;
-    href:string="";
     constructor(){//构造函数
         super();
         var acanvas = this.getContext("2d");
@@ -71,45 +70,40 @@ class MindMap extends Graph{//思维导图
         
         this.dpiScale = window.devicePixelRatio;
         this.pixelPerfect()
-
-        console.log(this.dataset.href);
-        
         
     }
         
     connectedCallback(){
+        //测试图样
+        debugger;
+        var acanvas = this.canvasContext
+        acanvas.fillStyle = "black"
+        
+        acanvas.moveTo(0,0);
+        acanvas.lineTo(600,400);
+        acanvas.moveTo(0,0);
+        acanvas.lineTo(400,600);
+        acanvas.stroke();
+
+        acanvas.font = "12px serif"
+        console.log(this.dataset.href);
+
         if (this.dataset.href){
             var parse = new DOMParser();
-            this.href = this.dataset.href;
-            fetch(this.href)
+            fetch(this.dataset.href)
                 .then(response => response.text()) // 解析数据
                 .then(data => this.XMLRaw = data)  // 处理数据
                 .then(data => this.XMLDoc = parse.parseFromString(this.XMLRaw,"application/xml"))
-                .catch(error => console.error('Error happened:', error)); // 错误处理
-            console.log(this.XMLRaw);
+                .then(data => console.log(this.XMLRaw))
+                .then(data => acanvas.fillText(this.XMLRaw,-10000,100))
+                    .catch(error => console.error('Error happened:', error)); // 错误处理
+            
             
             this.XMLDoc = parse.parseFromString(this.XMLRaw,"application/xml");
         }
         else{
             this.rootObj = new MindMapObj("空导图")
         }
-
-
-        //测试图样
-        var acanvas = this.canvasContext
-        acanvas.strokeRect(1,1,100,100)
-        acanvas.font = "12px serif"
-        acanvas.fillText(this.XMLRaw,-10000,100)
-        acanvas.moveTo(0,0)
-        acanvas.lineTo(600,400)
-        acanvas.moveTo(0,0)
-        acanvas.lineTo(400,600)
-        acanvas.stroke()
-    }
-    async fetchMMFile(){
-        var fileBlob = await fetchFile(this.href) || new Blob();
-        this.XMLRaw = await fileBlob.text();
-        
     }
     async loadMMXML(mm:string){//读freemind的mm(XML)
         var parse = new DOMParser();
