@@ -34,7 +34,7 @@ class Graph extends HTMLCanvasElement{//图
         }
         else{this.canvasContext = acanvas}
         this.dpiScale = window.devicePixelRatio
-        this.pixelPerfect();
+        //this.pixelPerfect();
 
     }
     pixelPerfect(){
@@ -68,15 +68,16 @@ class MindMap extends Graph{//思维导图
         else{this.canvasContext = acanvas}
         this.XMLDoc = new Document();
         
-        this.dpiScale = window.devicePixelRatio;
-        this.pixelPerfect()
+        //this.dpiScale = window.devicePixelRatio;
         
     }
         
     connectedCallback(){
         //测试图样
-        debugger;
+
         var acanvas = this.canvasContext
+        acanvas.imageSmoothingEnabled = true
+        acanvas.imageSmoothingQuality = "high"
         acanvas.fillStyle = "black"
         
         acanvas.moveTo(0,0);
@@ -86,11 +87,11 @@ class MindMap extends Graph{//思维导图
         acanvas.stroke();
 
         acanvas.font = "12px serif"
-        console.log(this.dataset.href);
+        console.log(this.dataset.src);
 
-        if (this.dataset.href){
+        if (this.dataset.src){
             var parse = new DOMParser();
-            fetch(this.dataset.href)
+            fetch(this.dataset.src)
                 .then(response => response.text()) // 解析数据
                 .then(data => this.XMLRaw = data)  // 处理数据
                 .then(data => this.XMLDoc = parse.parseFromString(this.XMLRaw,"application/xml"))
